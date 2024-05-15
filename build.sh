@@ -7,26 +7,39 @@ RELEASE="$(rpm -E %fedora)"
 
 ### Install packages
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/39/x86_64/repoview/index.html&protocol=https&redirect=1
-cat > /etc/yum.repos.d/1password.repo << EOF
-[1password]
-name=1Password Stable Channel
-baseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch
-enabled=1
-gpgcheck=0
-repo_gpgcheck=0
-EOF
-wget https://downloads.1password.com/linux/keys/1password.asc -O /etc/pki/rpm-gpg/1password.asc
-
-# this installs a package from fedora repos
-rpm-ostree install screen
-
-# this would install a package from rpmfusion
-# rpm-ostree install vlc
-rpm-ostree install 1password
+### Install 1Password
+onepassword () {
+  mkdir -p /var/opt # -p just in case it exists
+  # for some reason...
+  
+  # Setup repo
+  cat << EOF > /etc/yum.repos.d/1password.repo
+  [1password]
+  name=1Password ${RELEASE_CHANNEL^} Channel
+  baseurl=https://downloads.1password.com/linux/rpm/${RELEASE_CHANNEL}/\$basearch
+  enabled=1
+  gpgcheck=1
+  repo_gpgcheck=1
+  gpgkey=https://downloads.1password.com/linux/keys/1password.asc
+  EOF
+  
+  # Import signing key
+  rpm --import https://downloads.1password.com/linux/keys/1password.asc
+  
+  # Now let's install the packages.
+  rpm-ostree install 1password 1password-cli
+  
+  # Clean up the yum repo (updates are baked into new images)
+  rm /etc/yum.repos.d/1password.repo -f
+  
+  # And then we do the hacky dance!
+  mv /var/opt/1Password /usr/lib/1Password # move this over here
+  
+  # Create a symlink /usr/bin/1password => /opt/1Password/1password
+  rm /usr/bin/1password
+  ln -s /opt/1Password/1password /usr/bin/1password
+}
+onepassword
 
 #### Example for enabling a System Unit File
 
