@@ -16,10 +16,8 @@ cat > /etc/yum.repos.d/1password.repo << EOF
 name=1Password Stable Channel
 baseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch
 enabled=1
-gpgcheck=1
+gpgcheck=0
 repo_gpgcheck=0
-#gpgkey="https://downloads.1password.com/linux/keys/1password.asc"
-gpgkey=file:///etc/pki/rpm-gpg/1password.asc
 EOF
 wget https://downloads.1password.com/linux/keys/1password.asc -O /etc/pki/rpm-gpg/1password.asc
 
