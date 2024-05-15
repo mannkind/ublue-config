@@ -28,6 +28,7 @@ rpm-ostree install screen
 
 # this would install a package from rpmfusion
 # rpm-ostree install vlc
+rpm-ostree install 1password
 
 #### Example for enabling a System Unit File
 
