@@ -24,7 +24,7 @@ EOF
 wget https://downloads.1password.com/linux/keys/1password.asc -O /etc/pki/rpm-gpg/1password.asc
 
 # this installs a package from fedora repos
-rpm-ostree install screen 1password
+rpm-ostree install screen
 
 # this would install a package from rpmfusion
 # rpm-ostree install vlc
